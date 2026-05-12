@@ -1,0 +1,39 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    // File Layout
+    "outDir": "./public",
+
+    // Environment Settings
+    // See also https://aka.ms/tsconfig/module
+    "module": "nodenext",
+    "target": "esnext",
+    "types": [],
+
+
+    // Other Outputs
+    "sourceMap": false,
+    "declaration": false,
+    "declarationMap": false,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    // "exactOptionalPropertyTypes": true,
+
+    // Recommended Options
+    "strict": true,
+    // "jsx": "react-jsx",
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

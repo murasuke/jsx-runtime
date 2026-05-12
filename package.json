@@ -1,0 +1,20 @@
+{
+  "name": "jquery-jsx",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "tsc": "tsc",
+    "server": "http-server ./public"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
