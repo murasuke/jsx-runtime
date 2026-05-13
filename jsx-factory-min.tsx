@@ -19,65 +19,47 @@ export function h(tag: any, props: any, ...children: any[]) {
   const elm = document.createElement(tag);
   // 属性を追加
   if (props) {
-    for (const prop in props) {
-      if (prop === 'style') {
-        // styleの追加
-        for (const s in props[prop]) {
-          elm.style[s] = props[prop][s];
-        }
-      } else if (/^on\w+/.test(prop)) {
+    for (const [key, value] of Object.entries(props)) {
+      if (key.startsWith('on') && typeof value === 'function') {
         // イベントハンドラの追加
-        elm.addEventListener(prop.substring(2), props[prop], false);
-      } else {
+        const eventName = key.slice(2).toLowerCase();
+        elm.addEventListener(eventName, value);
+      } else if (key === 'style' && typeof value === 'object') {
+        // styleの追加
+        Object.assign(elm.style, value);
+      } else if (key === 'className') {
+        elm.setAttribute('class', value);
+      } else if (value != null && value !== false) {
         // 上記以外の属性を追加
-        elm.setAttribute(prop, props[prop]);
+        elm.setAttribute(key, String(value));
       }
     }
   }
 
   // 子要素の追加
-  if (Array.isArray(children)) {
-    // 入れ子の配列を平坦化
-    const flatten = children.flat(20);
-    for (const child of flatten) {
-      if (child == null || typeof child === 'boolean') {
-        continue;
-      }
-
-      if (child instanceof Node) {
-        // Nodeをそのまま追加(先に子側が生成され、それが渡される)
-        elm.appendChild(child);
-      } else {
-        // 文字列や数値の場合、TextNodeを追加
-        elm.appendChild(document.createTextNode(String(child)));
-      }
-    }
-  }
+  appendChildren(elm, children);
   return elm;
 }
 
 /**
- * Fragment (`<>...</>`) を受け取り、子要素だけをまとめた `DocumentFragment` を返します。
- *
- * @param props JSX の都合で渡される props です。この最小実装では使用しません。
- * @param children Fragment の子要素です。
- * @returns 子要素を格納した `DocumentFragment` を返します。
+ * 子要素を親要素に追加します。子要素が配列の場合は再帰的に処理します。
+ * @param parent 子要素を追加する親要素です。
+ * @param children 追加する子要素です。
  */
-export function JsxFragmentFactory(props: any, ...children: any[]) {
-  const fragment = document.createDocumentFragment();
-  const flatten = children.flat(20);
-
-  for (const child of flatten) {
-    if (child == null || typeof child === 'boolean') {
-      continue;
-    }
-
-    if (child instanceof Node) {
-      fragment.appendChild(child);
-    } else {
-      fragment.appendChild(document.createTextNode(String(child)));
-    }
+function appendChildren(parent: Node, children: any) {
+  if (Array.isArray(children)) {
+    children.forEach((child) => appendChildren(parent, child));
+    return;
   }
 
-  return fragment;
+  if (children == null || children === false || children === true) {
+    return;
+  }
+
+  if (children instanceof Node) {
+    parent.appendChild(children);
+    return;
+  }
+
+  parent.appendChild(document.createTextNode(String(children)));
 }
